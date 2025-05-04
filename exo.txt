@@ -1,0 +1,227 @@
+EXO 1: SELECT nom, prénom, annéeNaiss 
+FROM artiste 
+WHERE annéeNaiss < 1950;
+
+ // Colonne nom, prénom, annéeNais
+    condition sur annéeNaiss < 1950
+
+EXO 2:SELECT titre 
+FROM film 
+WHERE genre = 'drame';
+ // Colonne titre, genre pour (filtrer)
+    condition sur genre 
+
+EXO 3: SELECT nomRôle 
+FROM role r
+JOIN artiste a ON r.idActeur = a.idArtiste
+WHERE a.nom = 'Willis' AND a.prénom = 'Bruce';
+
+// jointure ON a.idArtiste = r.idActeur
+    Conditions nom = 'Willis' AND prénom = 'Bruce'
+
+
+EXO 4: SELECT a.nom, a.prénom 
+FROM film f
+JOIN artiste a ON f.idRéalisateur = a.idArtiste
+WHERE f.titre = 'Memento';
+
+ // jointure entre film et artiste
+     Conditions f.titr = 'Memento'
+
+EXO 5: SELECT n.note 
+FROM notation n
+JOIN film f ON f.idFilm = n.idFilm
+WHERE f.titre = 'Fargo';
+
+// jointure entre film et notation
+   condition titre 'Memento'
+
+EXO 6: SELECT a.nom, a.prénom 
+FROM role r
+JOIN artiste a ON r.idActeur = a.idArtiste
+WHERE r.nomRôle = 'Chewbacca';
+
+// Clé de liaison des tables concernées role.idActeur = artiste.idArtiste
+  condition = nomRole 'Chewbacca'
+
+
+EXO 7: SELECT f.titre 
+FROM film f
+JOIN role r ON r.idFilm = f.idFilm
+JOIN artiste a ON a.idArtiste = r.idActeur
+WHERE a.nom = 'Willis' AND a.prénom = 'Bruce'
+AND r.nomRôle = 'John McClane';
+
+  // Jointure entre les 3 tables (artiste, role, film)
+     Filtrage sur le nom, prénom, et le rôle
+ 
+ 
+EXO 8: SELECT DISTINCT a.nom, a.prénom 
+FROM artiste a
+JOIN role r ON a.idArtiste = r.idActeur
+JOIN film f ON f.idFilm = r.idFilm
+WHERE f.titre = 'Sueurs froides';
+
+ // relier l'acteur au role
+    triple jointure
+
+EXO 9:  SELECT f.titre 
+FROM film f
+JOIN notation n ON f.idFilm = n.idFilm
+JOIN internaute i ON i.email = n.email
+WHERE i.prénom = 'Prénom0' AND i.nom = 'Nom0';
+
+
+
+EXO 10: SELECT DISTINCT f.titre 
+FROM film f
+JOIN artiste r ON f.idRéalisateur = r.idArtiste
+JOIN role ro ON ro.idFilm = f.idFilm
+JOIN artiste a ON ro.idActeur = a.idArtiste
+WHERE r.nom = 'Burton' AND r.prénom = 'Tim'
+AND a.nom = 'Depp' AND a.prénom = 'Johnny';
+
+
+
+EXO 11: SELECT f.titre, r.nomRôle 
+FROM film f
+JOIN role r ON f.idFilm = r.idFilm
+JOIN artiste a ON a.idArtiste = r.idActeur
+WHERE a.nom = 'Allen' AND a.prénom = 'Woody';
+
+
+
+EXO 12: SELECT a.nom, a.prénom, r.nomRôle, f.titre 
+FROM film f
+JOIN artiste a ON f.idRéalisateur = a.idArtiste
+JOIN role r ON r.idFilm = f.idFilm AND r.idActeur = a.idArtiste;
+
+
+
+EXO 13: SELECT f.titre 
+FROM film f
+JOIN artiste r ON f.idRéalisateur = r.idArtiste
+WHERE r.nom = 'Tarantino' AND r.prénom = 'Quentin'
+  AND f.idFilm NOT IN (
+    SELECT r2.idFilm 
+    FROM role r2
+    JOIN artiste a2 ON r2.idActeur = a2.idArtiste
+    WHERE a2.nom = 'Tarantino' AND a2.prénom = 'Quentin'
+  );
+
+
+EXO 14: SELECT DISTINCT a.nom, a.prénom, r.nomRôle, f.titre 
+FROM film f
+JOIN role r ON r.idFilm = f.idFilm
+JOIN artiste a ON a.idArtiste = r.idActeur
+WHERE a.idArtiste IN (
+  SELECT idRéalisateur FROM film
+);
+
+
+
+EXO 15:SELECT f.titre 
+FROM film f
+JOIN artiste r ON f.idRéalisateur = r.idArtiste
+WHERE r.nom = 'Hitchcock'
+AND f.idFilm NOT IN (
+  SELECT r2.idFilm 
+  FROM role r2
+  JOIN artiste a2 ON r2.idActeur = a2.idArtiste
+  WHERE a2.nom = 'Stewart' AND a2.prénom = 'James'
+);
+
+
+
+EXO 16: SELECT DISTINCT f.titre, r1.nom AS nomRéalisateur, a2.nom AS nomActeur
+FROM film f
+JOIN artiste r1 ON f.idRéalisateur = r1.idArtiste
+JOIN role ro ON ro.idFilm = f.idFilm
+JOIN artiste a2 ON ro.idActeur = a2.idArtiste
+WHERE r1.prénom = a2.prénom AND r1.idArtiste != a2.idArtiste;
+
+
+
+EXO 17: SELECT f.titre 
+FROM film f
+LEFT JOIN role r ON f.idFilm = r.idFilm
+WHERE r.idFilm IS NULL;
+
+
+
+EXO 18: SELECT titre 
+FROM film
+WHERE idFilm NOT IN (
+  SELECT n.idFilm
+  FROM notation n
+  JOIN internaute i ON n.email = i.email
+  WHERE i.prénom = 'Prénom1' AND i.nom = 'Nom1'
+);
+
+
+
+EXO 19: SELECT a.nom, a.prénom 
+FROM artiste a
+WHERE a.idArtiste IN (
+    SELECT DISTINCT r.idActeur FROM role r
+)
+AND a.idArtiste NOT IN (
+    SELECT DISTINCT f.idRéalisateur FROM film f
+);
+
+
+
+EXO 20: SELECT AVG(n.note) AS moyenne 
+FROM notation n
+JOIN film f ON n.idFilm = f.idFilm
+WHERE f.titre = 'Memento';
+
+
+
+EXO 21: SELECT a.idArtiste, a.nom, a.prénom, COUNT(f.idFilm) AS nb_films
+FROM artiste a
+JOIN film f ON a.idArtiste = f.idRéalisateur
+GROUP BY a.idArtiste, a.nom, a.prénom;
+
+
+
+EXO 22: SELECT a.nom, a.prénom
+FROM artiste a
+JOIN film f ON a.idArtiste = f.idRéalisateur
+GROUP BY a.idArtiste, a.nom, a.prénom
+HAVING COUNT(f.idFilm) >= 2;
+
+
+
+EXO 23: SELECT f.titre, AVG(n.note) AS moyenne
+FROM film f
+JOIN notation n ON f.idFilm = n.idFilm
+GROUP BY f.idFilm, f.titre
+HAVING AVG(n.note) > 7;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
